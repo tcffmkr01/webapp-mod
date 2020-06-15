@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Welcome to MOD Readiness Tool</title>
+
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.css" rel="stylesheet" />
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+</head>
+<body>
+    <style>
+            #menu {
+            position: absolute;
+            background: #fff;
+            padding: 10px;
+            font-family: 'Open Sans', sans-serif;
+            }
+            </style>
+    <div id="map"></div>
+    <div id="menu">
+        <input
+        id="streets-v11"
+        type="radio"
+        name="rtoggle"
+        value="streets"
+        checked="checked"
+        />
+        <label for="streets-v11">streets</label>
+        <input id="ckamw86oc0tj21iotm3biadzj" type="radio" name="rtoggle" value="ckamw86oc0tj21iotm3biadzj" />
+        <label for="ckamw86oc0tj21iotm3biadzj">BLR Line</label>
+        <input id="ckamuv5h70w6p1inqdazmt2ft" type="radio" name="rtoggle" value="ckamuv5h70w6p1inqdazmt2ft" />
+        <label for="ckamuv5h70w6p1inqdazmt2ft">Population</label>
+        <input id="outdoors-v11" type="radio" name="rtoggle" value="outdoors" />
+        <label for="outdoors-v11">outdoors</label>
+        <input id="satellite-v9" type="radio" name="rtoggle" value="satellite" />
+        <label for="satellite-v9">satellite</label>
+        <input id="ckbe0tczw1fpr1ipbhckq7bxm" type="radio" name="rtoggle" value="ckbe0tczw1fpr1ipbhckq7bxm" />
+        <label for="ckbe0tczw1fpr1ipbhckq7bxm">Regional Attractions</label>
+        <input id="ckbe1qefx0h1g1io1y077tnkr" type="radio" name="rtoggle" value="ckbe1qefx0h1g1io1y077tnkr" />
+        <label for="ckbe1qefx0h1g1io1y077tnkr">Transit Sheds (10min)</label>
+        <input id="ckbe2vliy0rbi1imyaqr6f633" type="radio" name="rtoggle" value="ckbe2vliy0rbi1imyaqr6f633" />
+        <label for="ckbe2vliy0rbi1imyaqr6f633">Employment Density</label>
+        <input id="ckbe35xxp0yvl1htdxbu6v42s" type="radio" name="rtoggle" value="ckbe35xxp0yvl1htdxbu6v42s" />
+        <label for="ckbe35xxp0yvl1htdxbu6v42s">Population Density</label>
+        <input id="toggle-layer" type="radio" name="rtoggle" value="toggle-layer" />
+        <label for="toggle-layer">Toggle Layer</label>
+
+        
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+    <!-- MAP SCRIPT -->
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiY2ZmbWtyIiwiYSI6ImNqZDkzdHh4eDNiYTIycXFmNzMzaHNyOWEifQ.mmNhF6tg9PadImk4R2ISaQ';
+    
+
+        var map = new mapboxgl.Map({
+            container: 'map', // container id
+            style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+            //style: 'mapbox://styles/cffmkr/ckamw86oc0tj21iotm3biadzj',
+            //style: 'mapbox://styles/cffmkr/ckbe0tczw1fpr1ipbhckq7bxm',
+            //style: 'mapbox://styles/cffmkr/ckbe1qefx0h1g1io1y077tnkr',
+            //style: 'mapbox://styles/cffmkr/ckbe2vliy0rbi1imyaqr6f633',
+            center: [-83.0458, 42.3314], // starting position [lng, lat]
+            zoom: 10 // starting zoom
+        });
+        
+        
+        // map.on('click', function(e) {
+        // var features = map.queryRenderedFeatures(e.point, {
+        //     layers: ['stations'] // replace this with the name of the layer
+        // });
+
+        // if (!features.length) {
+        //     return;
+        // }
+
+        // var feature = features[0];
+
+        // var popup = new mapboxgl.Popup({ offset: [0, -15] })
+        //     .setLngLat(feature.geometry.coordinates)
+        //     .setHTML('<h3>' + feature.properties.Name + '</h3><p>' + feature.properties.TypCat + '</p>')
+        //     .addTo(map);
+        // });
+
+
+        map.on('load', function() {
+            var layers = map.getStyle().layers;
+            // Find the index of the first symbol layer in the map style
+            var firstSymbolId;
+            for (var i = 0; i < layers.length; i++) {
+                if (layers[i].type === 'symbol') {
+                firstSymbolId = layers[i].id;
+                break;
+                }
+            }
+            // map.addSource('urban-areas', {
+            //     'type': 'geojson',
+            //     'data': 'gis/stations_halfmilebuffer.geojson'
+            //     //'data':'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_50m_urban_areas.geojson'
+            //     //'data':'https://github.com/tcffmkr01/webapp-mod/blob/master/ne_50m_urban_areas.geojson'
+            // });
+            // map.addLayer(
+            // {
+            //     'id': 'urban-areas-fill',
+            //     'type': 'fill',
+            //     'source': 'urban-areas',
+            //     'layout': {},
+            //     'paint': {
+            //         'fill-color': '#f08',
+            //         'fill-opacity': 0
+            //     }
+
+            //     // This is the important part of this example: the addLayer
+            //     // method takes 2 arguments: the layer as an object, and a string
+            //     // representing another layer's name. if the other layer
+            //     // exists in the stylesheet already, the new layer will be positioned
+            //     // right before that layer in the stack, making it possible to put
+            //     // 'overlays' anywhere in the layer stack.
+            //     // Insert the layer beneath the first symbol layer.
+            // },
+            // firstSymbolId
+            // );
+
+
+            /// add TAZ layer
+            /////////// ADD A LAYER /////////////////
+            map.addSource('taz', {
+                'type': 'geojson',
+                'data': 'taz-pop-emp.geojson'
+            });
+            map.addLayer(
+                {
+                    'id': 'taz-pop',
+                    'type': 'fill',
+                    'source': 'taz',
+                    'layout': {},
+                    'paint': {
+                        'fill-color': {
+                        property: 'PopPerAc',
+                        stops: [
+                                    [1, '#f2f2f2'], 
+                                    [5, '#fce4d6'], 
+                                    [15, '#f4b184'], 
+                                    [25, '#c75a12'], 
+                                    [50, '#823c0c']
+                                ]
+                        },
+                        'fill-opacity': 0.7
+                    }
+                }
+            );
+            map.addLayer(
+                {
+                    'id': 'taz-emp',
+                    'type': 'fill',
+                    'source': 'taz',
+                    'layout': {},
+                    'paint': {
+                        'fill-color': {
+                        property: 'JobPerAc',
+                        stops: [
+                                    [1, '#f2f2f2'], 
+                                    [5, '#dcebf7'], 
+                                    [15, '#9ac1e6'], 
+                                    [25, '#2f74b5'], 
+                                    [50, '#1f4e78']
+                                ]
+                        },
+                        'fill-opacity': 0.7
+                    }
+                }
+            );
+
+
+            /////////// ADD A LAYER /////////////////
+            map.addSource('woodward-line', {
+                'type': 'geojson',
+                'data': 'woodward_line.geojson'
+            });
+            map.addLayer(
+                {
+                'id': 'woodward-line',
+                'type': 'line',
+                'source': 'woodward-line',
+                'layout': {
+                'line-join': 'round',
+                'line-cap': 'round'
+                },
+                'paint': {
+                'line-color': '#999',
+                'line-width': 5
+                }
+                }
+            );
+
+            /// add station 1/2 mile buffer layer
+            map.addSource('station-buffer', {
+                'type': 'geojson',
+                'data': 'stations_halfmilebuffer.geojson'
+            });
+            map.addLayer(
+                {
+                    'id': 'station-buffer',
+                    'type': 'line',
+                    'source': 'station-buffer',
+                    'layout': {},
+                    'paint': {
+                        'line-width': 3,
+                        'line-color': '#000'
+                    }
+                }
+            );
+
+            /// add station layer
+            map.addSource('station', {
+                'type': 'geojson',
+                'data': 'stations.geojson'
+            });
+            map.addLayer(
+                {
+                    'id': 'station',
+                    'type': 'circle',
+                    'source': 'station',
+                    'layout': {},
+                    'paint': {
+                        // make circles larger as the user zooms from z12 to z22
+                        'circle-radius': {
+                        'base': 3,
+                        'stops': [
+                        [9, 3.5],
+                        [22, 180]
+                        ]
+                        },
+                        // color circles by ethnicity, using a match expression
+                        // https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-match
+                        'circle-color': '#fff'
+                    }
+                }
+            );
+            
+        });
+
+        var layerList = document.getElementById('menu');
+        var inputs = layerList.getElementsByTagName('input');
+        
+        function switchLayer(layer) {
+        var layerId = layer.target.id;
+        var styleName = 'mapbox://styles/mapbox/' + layerId;
+        if(layerId === 'ckamw86oc0tj21iotm3biadzj' || layerId ==='ckamuv5h70w6p1inqdazmt2ft' || layerId ==='ckbe0tczw1fpr1ipbhckq7bxm' 
+            || layerId==='ckbe1qefx0h1g1io1y077tnkr' || layerId ==='ckbe2vliy0rbi1imyaqr6f633' || layerId==='ckbe35xxp0yvl1htdxbu6v42s'){
+            //alert(layerId);
+            styleName = 'mapbox://styles/cffmkr/' + layerId;
+        }
+        else if (layerId==='toggle-layer'){
+            
+            if (map.getLayoutProperty('taz-pop', 'visibility')==='visible'){
+                map.setLayoutProperty('taz-pop', 'visibility', 'none');
+                map.setLayoutProperty('taz-emp', 'visibility', 'visible');
+            }else{
+                map.setLayoutProperty('taz-pop', 'visibility', 'visible');
+                map.setLayoutProperty('taz-emp', 'visibility', 'none');
+            }
+        }
+        map.setStyle(styleName);
+        
+        }
+        
+        for (var i = 0; i < inputs.length; i++) {
+        inputs[i].onclick = switchLayer;
+        }
+
+
+        // Create a popup, but don't add it to the map yet.
+        var popup = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: false
+        });
+        
+        map.on('mouseenter', 'station', function(e) {
+        // Change the cursor style as a UI indicator.
+        map.getCanvas().style.cursor = 'pointer';
+        
+        var coordinates = e.features[0].geometry.coordinates.slice();
+        var description = e.features[0].properties.Name;
+        
+        // Ensure that if the map is zoomed out such that multiple
+        // copies of the feature are visible, the popup appears
+        // over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+        
+        // Populate the popup and set its coordinates
+        // based on the feature found.
+        popup
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(map);
+        });
+        
+        map.on('mouseleave', 'station', function() {
+        map.getCanvas().style.cursor = '';
+        popup.remove();
+        });
+        
+    </script>
+</body>
+</html>
